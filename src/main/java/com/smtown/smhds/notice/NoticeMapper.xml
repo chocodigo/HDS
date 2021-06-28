@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.smtown.smhds.notice.NoticeMapper">
+
+	<!--
+     *   프로그램명 : 공지사항 게시판
+     *   작 성 일 : 2019.05.28
+     *   작 성 자 : 최해림
+     *   비   고 :
+     *   Copyright (c) 2019 SM Entertainment Co.,Ltd All Rights reserved.
+     -->
+
+	<!--
+     /***********************************************************************************
+         작  성  자 : 최해림
+         작  성  일 : 2019.05.28
+         내      용 : 공지사항 게시판 게시글 갯수
+         파라미터   : PrintPage 출력할 페이지 정보
+     /***********************************************************************************
+      -->
+	<select id="noticeCount" resultType="int">
+		SELECT
+		COUNT(*)	/*게시글 갯수*/
+		FROM HD_Notice
+		WHERE 1=1
+		<if test="search != ''">
+			AND TITL_NAME LIKE '%' #{search} '%'
+		</if>
+		<!-- 날짜 검색 값이 있을 때-->
+		<if test="start_day != '' and start_day neq null">
+			AND DATE(CREA_DATE) BETWEEN #{start_day} AND #{end_day}
+		</if>
+	</select>
+
+	<!--
+    /***********************************************************************************
+        작  성  자 : 최해림
+        작  성  일 : 2019.05.28
+        내      용 : 게시물 목록
+        파라미터   : PrintPage 출력할 페이지 정보
+    /*********************************************************************************** 
+     -->
+	<select id="noticeList" resultType="com.smtown.smhds.notice.NoticeVO">
+		SELECT
+		IDXX_NUMB		/*순번*/
+		, TITL_NAME		/*제목*/
+		, USER_NAME		/*이름*/
+		, CONT_ENTS		/*내용*/
+		, CREA_USER		/*생성자*/
+		, CREA_DATE		/*생성일자*/
+		, ROW_NUMBER() OVER (ORDER BY CREA_DATE) AS NUMB_KEYX	/*순번*/
+
+		FROM HD_Notice
+		WHERE 1=1
+		<if test="search != ''">
+			AND TITL_NAME LIKE '%' #{search} '%'
+		</if>
+		<!-- 날짜 검색 값이 있을 때-->
+		<if test="start_day != '' and start_day neq null">
+			AND DATE(CREA_DATE) BETWEEN #{start_day} AND #{end_day}
+		</if>
+		ORDER BY CREA_DATE DESC
+		LIMIT #{pageStart}, #{perPageNum}
+	</select>
+
+	<!--
+/***********************************************************************************
+    작  성  자 : 최해림
+    작  성  일 : 2019.05.31
+    내      용 : 자동완성기능 정보를 위해 제목 내용을 return
+    파라미터   : PrintPage 출력할 페이지 정보
+/***********************************************************************************
+ -->
+	<select id="noticeSuggestion" resultType="String">
+		SELECT
+		TITL_NAME 		/*제목*/
+		FROM HD_Notice
+		<if test="search != ''">
+			WHERE TITL_NAME LIKE #{search} '%'
+		</if>
+		ORDER BY CREA_DATE DESC
+		LIMIT 5
+	</select>
+
+	<!--
+	/***********************************************************************************
+		작  성  자 : 최해림
+		작  성  일 : 2019.05.28
+		내      용 : 게시글 상세
+		파라미터   : idxx_numb : 게시글 주키
+	/***********************************************************************************
+	 -->
+	<select id="noticeDetail" parameterType="String" resultType="com.smtown.smhds.notice.NoticeVO">
+		SELECT
+		IDXX_NUMB		/*순번*/
+		, TITL_NAME		/*제목*/
+		, USER_NAME		/*이름*/
+		, CONT_ENTS		/*내용*/
+		, CREA_USER		/*생성자*/
+		, CREA_DATE		/*생성일자*/
+		FROM HD_Notice
+		WHERE IDXX_NUMB = #{idxx_numb}
+	</select>
+
+	<!--
+    /***********************************************************************************
+        작  성  자 : 최해림
+        작  성  일 : 2019.05.28
+        내      용 : NoticeIdxx PRIMARY KEY 생성을 위한 시퀸스 생성
+        파라미터   : 
+    /*********************************************************************************** 
+     -->
+	<select id="noticeSelectIdxx" resultType="String">
+		SELECT
+		CONCAT(replace(substr(CONVERT(now(), char),3,8),'-',''), 'NO','1',LPAD(ifnull(max(cast(substr(IDXX_NUMB, 12,2)as  decimal)),0) + 1,4,'0')) AS IDXX_NUMB
+		FROM HD_Notice
+		WHERE 1=1
+		AND SUBSTR(IDXX_NUMB,1,6) = replace(substr(CONVERT(now(), char),3,8),'-','')
+	</select>
+
+	<!--
+    /***********************************************************************************
+        작  성  자 : 최해림
+        작  성  일 : 2019.05.28
+        내      용 : 게시글 저장을 위한 insert Query
+        파라미터   : NoticeVO
+    /*********************************************************************************** 
+     -->
+	<insert id="noticeInsert" parameterType="com.smtown.smhds.notice.NoticeVO">
+		INSERT INTO HD_Notice (
+		IDXX_NUMB					/*순번*/
+		, TITL_NAME					/*이름*/
+		, USER_NAME					/*이름*/
+		, CONT_ENTS					/*내용*/
+		, CREA_USER					/*생성자*/
+		, CREA_DATE					/*생성일자*/
+		)
+		VALUES(
+		#{idxx_numb}				/*순번*/
+		,#{titl_name}				/*제목*/
+		,#{user_name}				/*이름*/
+		,#{cont_ents}				/*내용*/
+		,#{crea_user}				/*생성자*/
+		,now()						/*생성일자*/
+		)
+	</insert>
+
+	<!--
+    /***********************************************************************************
+        작  성  자 : 최해림
+        작  성  일 : 2019.05.28
+        내      용 : 게시글 삭제
+        파라미터   : idxx_numb 게시글 주키
+    /*********************************************************************************** 
+     -->
+	<delete id="noticeDelete">
+		DELETE FROM HD_Notice WHERE IDXX_NUMB = #{idxx_numb}
+	</delete>
+
+	<!--
+	/***********************************************************************************
+		작  성  자 : 최해림
+		작  성  일 : 2019.05.30
+		내      용 : 게시글 수정
+		파라미터   : NoticeVO
+	/***********************************************************************************
+	 -->
+	<update id="noticeUpdate" parameterType="com.smtown.smhds.notice.NoticeVO">
+		UPDATE HD_Notice
+		SET
+		<if test="titl_name != null">
+			TITL_NAME = #{titl_name}
+		</if>
+		<if test="titl_name != null and cont_ents != null"> , </if>
+		<if test="cont_ents != null">
+			CONT_ENTS = #{cont_ents}
+		</if>
+		WHERE IDXX_NUMB = #{idxx_numb}
+	</update>
+</mapper>

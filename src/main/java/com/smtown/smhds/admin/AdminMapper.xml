@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.smtown.smhds.admin.AdminMapper">
+    <!--
+    /***********************************************************************************
+       작  성  자 : 최해림
+       작  성  일 : 2019.07.24
+       내      용 : 카테고리 정보 받아오는 Query
+       파라미터   :
+    /***********************************************************************************
+    -->
+    <select id="getCategoryList" resultType="com.smtown.smhds.admin.CategoryVO">
+        SELECT
+        CODE_NAME				/*카테고리 이름*/
+        ,COMM_CODE				/*카테고리 코드*/
+        ,ADMI_MAIL              /*카테고리 담당자 메일*/
+        FROM HD_Code
+        WHERE
+        CLAS_CODE = 'CATE_GORY'			/*카테고리 관련 코드*/
+        ORDER BY COMM_CODE 				/*카테고리 코드에 따라 정렬*/
+    </select>
+    <!--
+    /***********************************************************************************
+       작  성  자 : 최해림
+       작  성  일 : 2019.07.24
+       내      용 : 카테고리 코드 중복체크하는 Query
+       파라미터   :
+    /***********************************************************************************
+    -->
+    <select id="checkCommCode" resultType="int">
+        SELECT
+        COUNT(*)
+        FROM HD_Code
+        WHERE
+        CLAS_CODE = 'CATE_GORY'         /*카테고리 관련 코드*/
+        and
+        COMM_CODE = #{comm_code}        /*카테고리 코드*/
+    </select>
+
+    <!--
+    /***********************************************************************************
+       작  성  자 : 최해림
+       작  성  일 : 2019.07.25
+       내      용 : 카테고리 코드 등록 Query
+       파라미터   :
+    /***********************************************************************************
+    -->
+    <insert id="insertCategory" parameterType="com.smtown.smhds.admin.CategoryVO">
+        INSERT INTO HD_Code (
+        CLAS_CODE                   /*코드 종류*/
+        ,COMM_CODE                  /*코드*/
+        ,CODE_NAME                  /*코드이름*/
+        ,USEY_YSNO                 /*사용여부*/
+        ,ADMI_MAIL                  /*담당관리자 메일*/
+        )
+        VALUES(
+        'CATE_GORY'                 /*코드 종류*/
+        ,#{comm_code}               /*코드*/
+        ,#{code_name}               /*코드이름*/
+        ,'Y'                        /*사용여부*/
+        ,#{admi_mail}               /*담당관리자 메일*/
+        )
+    </insert>
+
+    <!--
+    /***********************************************************************************
+       작  성  자 : 최해림
+       작  성  일 : 2019.07.25
+       내      용 : 카테고리 코드 상세 Query
+       파라미터   :
+    /***********************************************************************************
+    -->
+    <select id="detailCategory" parameterType="String" resultType="com.smtown.smhds.admin.CategoryVO">
+        SELECT
+        CODE_NAME				/*카테고리 이름*/
+        ,COMM_CODE				/*카테고리 코드*/
+        ,ADMI_MAIL              /*카테고리 담당자 메일*/
+        FROM HD_Code
+        WHERE
+        CLAS_CODE = 'CATE_GORY'			/*카테고리 관련 코드*/
+        AND
+        COMM_CODE = #{comm_code}
+    </select>
+
+    <!--
+    /***********************************************************************************
+       작  성  자 : 최해림
+       작  성  일 : 2019.07.25
+       내      용 : 카테고리 코드 수정 Query
+       파라미터   :
+    /***********************************************************************************
+    -->
+    <update id="updateCategory" parameterType="com.smtown.smhds.admin.CategoryVO">
+        UPDATE HD_Code
+        SET
+        COMM_CODE = #{categoryVO.comm_code}         /**/
+        ,CODE_NAME = #{categoryVO.code_name}        /**/
+        ,ADMI_MAIL = #{categoryVO.admi_mail}        /**/
+        WHERE
+        CLAS_CODE = 'CATE_GORY'			/*카테고리 관련 코드*/
+        AND
+        COMM_CODE = #{comm_code}
+    </update>
+
+    <!--
+    /***********************************************************************************
+       작  성  자 : 최해림
+       작  성  일 : 2019.07.25
+       내      용 : 카테고리 코드 삭제 Query
+       파라미터   :
+    /***********************************************************************************
+    -->
+    <delete id="deleteCategory" parameterType="String">
+        DELETE
+        FROM HD_Code
+        WHERE
+        COMM_CODE = #{comm_code}
+        AND
+        CLAS_CODE = 'CATE_GORY'
+    </delete>
+</mapper>

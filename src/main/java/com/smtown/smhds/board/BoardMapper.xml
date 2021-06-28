@@ -1,0 +1,486 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.smtown.smhds.board.BoardMapper">
+
+	<!--
+     *   프로그램명 : 요청사항 게시판
+     *   작 성 일 : 2019.05.21
+     *   작 성 자 : 최해림
+     *   비   고 :
+     *   Copyright (c) 2019 SM Entertainment Co.,Ltd All Rights reserved.
+     -->
+
+	<!--
+   /***********************************************************************************
+       작  성  자 : 최해림
+       작  성  일 : 2019.06.17
+       내      용 : 생일인증
+       파라미터   : user_name, phon_enum
+   /***********************************************************************************
+    -->
+	<select id="boardCompareBirth" resultType="int">
+		SELECT
+		COUNT(*)
+		FROM HD_User
+		WHERE
+		USER_NAME = #{user_name}
+		AND
+		PHON_ENUM = #{phon_enum}
+	</select>
+
+	<!--
+    /***********************************************************************************
+        작  성  자 : 최해림
+        작  성  일 : 2019.06.17
+        내      용 : 비밀번호 변경
+        파라미터   : user_name, pass_word
+    /*********************************************************************************** 
+     -->
+	<update id="boardResetPassword">
+		UPDATE HD_User
+		SET
+			PASS_WORD = #{pass_word}
+		WHERE USER_NAME = #{user_name}
+	</update>
+
+	<!--
+    /***********************************************************************************
+        작  성  자 : 최해림
+        작  성  일 : 2019.07.18
+        내      용 : 비밀번호 null 확인
+        파라미터   : user_name, pass_word
+    /***********************************************************************************
+     -->
+	<select id="isPasswordNull" resultType="int">
+		SELECT
+		COUNT(*)
+		FROM HD_User
+		WHERE
+		USER_NAME = #{user_name}
+		AND
+		PASS_WORD IS NULL
+	</select>
+	<!--
+	/***********************************************************************************
+        작  성  자 : 최해림
+        작  성  일 : 2019.07.08
+        내      용 : 총 게시물 상태 갯수
+        파라미터   :
+    /***********************************************************************************
+     -->
+	<select id="boardStatInfo" resultType="com.smtown.smhds.board.StatInfo">
+		SELECT COUNT(IF(STAT_FLAG='01',STAT_FLAG,NULL)) as STAT_NEWW,	/*신규*/
+		COUNT(IF(STAT_FLAG='02',STAT_FLAG,NULL)) as STAT_CHEK,  /*접수*/
+		COUNT(IF(STAT_FLAG='03',STAT_FLAG,NULL)) as STAT_LOAD,  /*진행*/
+		COUNT(IF(STAT_FLAG='04',STAT_FLAG,NULL)) as STAT_COMP   /*완료*/
+		FROM HD_Board
+
+	</select>
+
+	<!-- 
+	/***********************************************************************************
+        작  성  자 : 최해림
+        작  성  일 : 2019.05.21
+        내      용 : 요청사항 게시판 게시글 갯수
+        파라미터   : PrintPage
+    /*********************************************************************************** 
+     -->
+	<select id="boardCount" resultType="int">
+		SELECT
+		COUNT(*)	/*게시글 갯수*/
+		FROM HD_Board
+		WHERE	1=1
+		<if test="search != ''">
+			AND TITL_NAME LIKE '%' #{search} '%'
+		</if>
+		<if test="start_day !=''">
+			AND DATE(CREA_DATE) BETWEEN #{start_day} AND #{end_day}
+		</if>
+		<if test="cate_gory neq null and cate_gory != '00'">
+			AND CATE_GORY = #{cate_gory}
+		</if>
+		<if test="stat_flag neq null and stat_flag != '00'">
+			AND STAT_FLAG = #{stat_flag}
+		</if>
+	</select>
+
+
+	<!--
+    /***********************************************************************************
+        작  성  자 : 최해림
+        작  성  일 : 2019.05.21
+        내      용 : 게시물 목록
+        파라미터   : PrintPage
+    /*********************************************************************************** 
+     -->
+	<select id="boardList" resultType="com.smtown.smhds.board.BoardVO">
+		SELECT
+		IDXX_NUMB		/*순번*/
+		, TITL_NAME		/*제목*/
+		, USER_NAME		/*이름*/
+		, CONT_ENTS		/*내용*/
+		, STAT_FLAG		/*상태*/
+		, SUCC_DATE		/*완료일자*/
+		, CREA_USER		/*생성자*/
+		, CREA_DATE		/*생성일자*/
+		, UPDA_USER		/*수정자*/
+		, UPDA_DATE		/*수정일자*/
+		, ROW_NUMBER() OVER (ORDER BY CREA_DATE) AS NUMB_KEYX	/*순번*/
+		,
+		( SELECT
+		CODE_NAME		/*카테고리 이름*/
+		FROM HD_Code
+		WHERE
+		CLAS_CODE = 'CATE_GORY'	/*클래스 코드가 카테고리*/
+		AND
+		COMM_CODE = CATE_GORY) 	/*글 카테고리 코드에 맞는 이름*/
+		AS CATE_NAME		/*카테고리*/
+		FROM HD_Board
+		WHERE 1=1
+		<!-- 검색어 값이 있을 때-->
+		<if test="search != '' and search neq null">
+			AND TITL_NAME LIKE '%' #{search} '%'
+		</if>
+		<!-- 날짜 검색 값이 있을 때-->
+		<if test="start_day != '' and start_day neq null">
+			AND DATE(CREA_DATE) BETWEEN #{start_day} AND #{end_day}
+		</if>
+		<!-- 카테고리 값이 있을때-->
+		<if test="cate_gory != '' and cate_gory neq null and cate_gory != '00'">
+			AND CATE_GORY = #{cate_gory}
+		</if>
+		<!-- 상태 값이 있을때 -->
+		<if test="stat_flag neq null and stat_flag != '00'">
+			AND STAT_FLAG = #{stat_flag}
+		</if>
+		ORDER BY CREA_DATE DESC
+		LIMIT #{pageStart}, #{perPageNum}
+	</select>
+	<!--
+    /***********************************************************************************
+        작  성  자 : 최해림
+        작  성  일 : 2019.05.21
+        내      용 : 자동완성기능 정보를 위해 제목 내용을 return
+        파라미터   : PrintPage
+    /*********************************************************************************** 
+     -->
+	<select id="boardSuggestion" resultType="String">
+		SELECT
+		TITL_NAME 		/*제목*/
+		FROM HD_Board
+		WHERE 1=1
+		<if test="search != ''">
+			AND TITL_NAME LIKE #{search} '%'
+		</if>
+
+		ORDER BY CREA_DATE DESC
+		LIMIT 5
+	</select>
+
+	<!--
+    /***********************************************************************************
+        작  성  자 : 최해림
+        작  성  일 : 2019.06.20
+        내      용 : 게시글이 답변을 가지고 있는지 확인
+        파라미터   : idxx_numb : 게시글 주키
+    /***********************************************************************************
+     -->
+	<select id="boardHasReply" resultType="int">
+		SELECT
+		COUNT(*)
+		FROM HD_Comment
+		WHERE IDXX_NUMB = #{idxx_numb}
+
+	</select>
+
+	<!-- 
+	/***********************************************************************************
+        작  성  자 : 최해림
+        작  성  일 : 2019.05.21
+        내      용 : 게시글 상세
+        파라미터   : idxx_numb : 게시글 상세 번호
+    /*********************************************************************************** 
+     -->
+	<select id="boardDetail" parameterType="String" resultType="com.smtown.smhds.board.BoardVO">
+		SELECT
+		IDXX_NUMB		/*순번*/
+		, TITL_NAME		/*제목*/
+		, USER_NAME		/*이름*/
+		, CONT_ENTS		/*내용*/
+		, STAT_FLAG		/*상태*/
+		, SUCC_DATE		/*완료일자*/
+		, CREA_USER		/*생성자*/
+		, CREA_DATE		/*생성일자*/
+		, UPDA_USER		/*수정자*/
+		, UPDA_DATE		/*수정일자*/
+		, CATE_GORY		/*카테고리*/
+		,( SELECT
+		CODE_NAME		/*카테고리 이름*/
+		FROM HD_Code
+		WHERE
+		CLAS_CODE = 'CATE_GORY'	/*클래스 코드가 카테고리*/
+		AND
+		COMM_CODE = CATE_GORY) 	/*글 카테고리 코드에 맞는 이름*/
+		AS CATE_NAME		/*카테고리*/
+
+		FROM HD_Board
+		WHERE IDXX_NUMB = #{idxx_numb}
+	</select>
+
+
+	<!--
+    /***********************************************************************************
+        작  성  자 : 최해림
+        작  성  일 : 2019.05.21
+        내      용 : 게시글 저장을 위한 insert Query
+        파라미터   : BoardVO
+    /*********************************************************************************** 
+     -->
+	<insert id="boardInsert" parameterType="com.smtown.smhds.board.BoardVO">
+		INSERT INTO HD_Board (		/* boardInsert 게시글 저장  [요청사항 저장]*/
+		IDXX_NUMB					/*순번*/
+		, TITL_NAME					/*이름*/
+		, USER_NAME					/*이름*/
+		, CONT_ENTS					/*내용*/
+		, SUCC_DATE					/*완료일자*/
+		, STAT_FLAG					/*상태*/
+		, CREA_USER					/*생성자*/
+		, CREA_DATE					/*생성일자*/
+		, UPDA_USER					/*수정자*/
+		, UPDA_DATE					/*수정일자*/
+		, CATE_GORY					/*카테고리*/
+		)
+		VALUES(
+		#{idxx_numb}				/*순번*/
+		,#{titl_name}				/*제목*/
+		,#{user_name}				/*이름*/
+		,#{cont_ents}				/*내용*/
+		,#{succ_date}				/*완료일자*/
+		,#{stat_flag}				/*상태*/
+		,#{crea_user}				/*생성자*/
+		,now()						/*생성일자*/
+		,#{upda_user}				/*수정자*/
+		,#{upda_date}				/*수정일자*/
+		,#{cate_gory}				/*카테고리*/
+		)
+	</insert>
+
+
+	<!-- 
+	/***********************************************************************************
+        작  성  자 : 최해림
+        작  성  일 : 2019.05.21
+        내      용 : 게시글 수정
+        파라미터   : BoardVO
+    /*********************************************************************************** 
+     -->
+	<update id="boardUpdate" parameterType="com.smtown.smhds.board.BoardVO">
+		UPDATE HD_Board
+		SET
+		<if test="titl_name != null and titl_name != ''">
+			TITL_NAME = #{titl_name},				/*제목*/
+		</if>
+		<if test="cont_ents != null and cont_ents != ''">
+			CONT_ENTS = #{cont_ents},				/*내용*/
+		</if>
+		<if test="cate_gory != null and cate_gory != ''">
+			CATE_GORY = #{cate_gory},
+		</if>
+			UPDA_DATE = now()						/*수정일자*/
+		WHERE IDXX_NUMB = #{idxx_numb}
+	</update>
+
+	<!--
+    /***********************************************************************************
+        작  성  자 : 최해림
+        작  성  일 : 2019.06.14
+        내      용 : 게시글 상태 수정
+        파라미터   : BoardVO
+    /***********************************************************************************
+     -->
+	<update id="boardUpdateStat" parameterType="com.smtown.smhds.board.BoardVO">
+		UPDATE HD_Board
+		SET
+		STAT_FLAG = #{stat_flag}				/*상태 플래그*/
+		,
+		UPDA_DATE = now()						/*수정일자*/
+
+		<if test="stat_flag == '04'">
+			,SUCC_DATE = now()
+		</if>
+		<if test="stat_flag != '04'">
+			,SUCC_DATE = null
+		</if>
+		WHERE IDXX_NUMB = #{idxx_numb}
+	</update>
+
+	<!--
+	/***********************************************************************************
+        작  성  자 : 최해림
+        작  성  일 : 2019.06.26
+        내      용 : 게시글 상태 이름
+        파라미터   : 상태 코드(stat_flag)
+    /***********************************************************************************
+     -->
+	<select id="selectCodeName" parameterType="String" resultType="String">
+		SELECT CODE_NAME 		/*상태 이름*/
+		FROM HD_Code
+		WHERE
+		CLAS_CODE = 'STAT_FLAG'
+		AND
+		COMM_CODE = #{stat_flag}
+
+	</select>
+
+	<!--
+    /***********************************************************************************
+        작  성  자 : 최해림
+        작  성  일 : 2019.05.21
+        내      용 : 게시글 삭제
+        파라미터   : idxx_numb 게시글 주키
+    /*********************************************************************************** 
+     -->
+	<delete id="boardDelete">
+		DELETE FROM HD_Board WHERE IDXX_NUMB = #{idxx_numb}
+	</delete>
+
+	<!--
+    /***********************************************************************************
+        작  성  자 : 최해림
+        작  성  일 : 2019.05.21
+        내      용 : 파일업로드 를 위한 파일 정보 
+        파라미터   : FileVO
+    /*********************************************************************************** 
+     -->
+	<insert id="fileInsert" parameterType="com.smtown.smhds.util.FileVO">
+		INSERT INTO HD_File (			/* fileInsert 파일업로드 정보 저장  [파일정보저장]*/
+		FILE_NUMB			/*파일순번*/
+		, IDXX_NUMB			/*게시글번호*/
+		, FILE_NAME			/*파일명*/
+		, FILE_ORIG			/*원본파일명*/
+		, FILE_URLL			/*파일 절대 경로*/
+		)
+		VALUES (
+		#{file_numb}		/*파일순번*/
+		, #{idxx_numb}		/*게시글번호*/
+		, #{file_name}		/*파일명*/
+		, #{file_orig}		/*원본파일명*/
+		, #{file_urll}		/*파일 절대 경로*/
+		)
+	</insert>
+
+
+	<!--
+   /***********************************************************************************
+       작  성  자 : 최해림
+       작  성  일 : 2019.05.21
+       내      용 : 파일 상세 내용
+       파라미터   : FileVO
+   /***********************************************************************************
+    -->
+	<select id="fileDetail" parameterType="String" resultType="com.smtown.smhds.util.FileVO">
+		SELECT
+		FILE_NUMB		/*파일순번*/
+		, IDXX_NUMB		/*게시글번호*/
+		, FILE_NAME		/*파일명*/
+		, FILE_ORIG		/*원본파일명*/
+		, FILE_URLL		/*파일 절대 경로*/
+		FROM HD_File
+		WHERE
+		IDXX_NUMB = #{idxx_numb}
+	</select>
+
+
+
+	<!--
+    /***********************************************************************************
+        작  성  자 : 최해림
+        작  성  일 : 2019.05.21
+        내      용 : 첨부파일 삭제
+        파라미터   : idxx_numb 게시글 주키
+    /*********************************************************************************** 
+     -->
+	<delete id="fileDelete" parameterType="String">
+		DELETE FROM HD_File WHERE IDXX_NUMB = #{idxx_numb}
+	</delete>
+
+
+	<!--
+    /***********************************************************************************
+        작  성  자 : 최해림
+        작  성  일 : 2019.05.21
+        내      용 : BoardIdxx PRIMARY KEY 생성을 위한 시퀸스 생성
+        파라미터   :
+    /***********************************************************************************
+    -->
+
+	<select id="boardSelectIdxx" resultType="String">
+		SELECT
+		CONCAT(replace(substr(CONVERT(now(), char),3,8),'-',''), 'SMHD',LPAD(ifnull(max(cast(substr(IDXX_NUMB, 13,2)as  decimal)),0) + 1,4,'0')) AS IDXX_NUMB
+		FROM HD_Board
+		WHERE 1=1
+		AND SUBSTR(IDXX_NUMB,1,6) = replace(substr(CONVERT(now(), char),3,8),'-','')
+	</select>
+
+	<!--
+    /***********************************************************************************
+        작  성  자 : 최해림
+        작  성  일 : 2019.07.16
+        내      용 : 진행상태에 따른 리스트 분류
+        파라미터   : PrintPage
+    /***********************************************************************************
+     -->
+	<select id="boardFindStat" resultType="com.smtown.smhds.board.BoardVO">
+		SELECT
+		IDXX_NUMB		/*순번*/
+		, TITL_NAME		/*제목*/
+		, USER_NAME		/*이름*/
+		, CONT_ENTS		/*내용*/
+		, STAT_FLAG		/*상태*/
+		, SUCC_DATE		/*완료일자*/
+		, CREA_USER		/*생성자*/
+		, CREA_DATE		/*생성일자*/
+		, UPDA_USER		/*수정자*/
+		, UPDA_DATE		/*수정일자*/
+		, ROW_NUMBER() OVER (ORDER BY CREA_DATE) AS NUMB_KEYX	/*순번*/
+		,
+		( SELECT
+		CODE_NAME		/*카테고리 이름*/
+		FROM HD_Code
+		WHERE
+		CLAS_CODE = 'CATE_GORY'	/*클래스 코드가 카테고리*/
+		AND
+		COMM_CODE = CATE_GORY) 	/*글 카테고리 코드에 맞는 이름*/
+		AS CATE_NAME		/*카테고리*/
+		FROM HD_Board
+		WHERE STAT_FLAG = #{stat_flag}
+		<if test="search != ''">
+			AND TITL_NAME LIKE '%' #{search} '%'
+		</if>
+		<if test="cate_gory neq null">
+			AND CATE_GORY = #{cate_gory}
+		</if>
+		ORDER BY CREA_DATE DESC
+		LIMIT #{pageStart}, #{perPageNum}
+
+	</select>
+
+	<!--
+    /***********************************************************************************
+        작  성  자 : 최해림
+        작  성  일 : 2019.07.24
+        내      용 : 카테고리 관리자 이메일 조회
+        파라미터   : 카테고리 코드
+    /***********************************************************************************
+     -->
+	<select id="getAdminEmail" resultType="String">
+		SELECT ADMI_MAIL
+		FROM HD_Code
+		WHERE CLAS_CODE = 'CATE_GORY'
+		AND
+		COMM_CODE = #{cate_gory}
+	</select>
+</mapper>

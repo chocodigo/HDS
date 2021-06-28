@@ -1,0 +1,110 @@
+@font-face {
+	font-family: notokr;
+	src: url('../fonts/NotoSansK2R/notokr-light.eot');
+	src: url('../fonts/NotoSansKR2/notokr-light.ttf');
+	src: url('../fonts/NotoSansKR2/notokr-light.woff');
+	/*src: url('../fonts/NotoSansKR/notokr-light.woff2');*/
+	font-weight: 200;
+	font-style: normal
+}
+@font-face {
+	font-family: notokr;
+	src: url('../fonts/NotoSansKR2/notokr-demilight.eot');
+	src: url('../fonts/NotoSansKR2/notokr-demilight.ttf');
+	src: url('../fonts/NotoSansKR2/notokr-demilight.woff');
+	/*src: url('../fonts/NotoSansKR/notokr-demilight.woff2');*/
+	font-weight: 300;
+	font-style: normal
+}
+@font-face {
+	font-family: notokr;
+	src: url('../fonts/NotoSansKR2/notokr-regular.eot');
+	src: url('../fonts/NotoSansKR2/notokr-regular.ttf');
+	src: url('../fonts/NotoSansKR2/notokr-regular.woff');
+	/*src: url('../fonts/NotoSansKR/notokr-regular.woff2');*/
+	font-weight: 400;
+	font-style: normal
+}
+@font-face {
+	font-family: notokr;
+	src: url('../fonts/NotoSansKR2/notokr-medium.eot');
+	src: url('../fonts/NotoSansKR2/notokr-medium.ttf');
+	src: url('../fonts/NotoSansKR2/notokr-medium.woff');
+	/*src: url('../fonts/NotoSansKR/notokr-medium.woff2');*/
+	font-weight: 500;
+	font-style: normal
+}
+@font-face {
+	font-family: notokr;
+	src: url('../fonts/NotoSansKR2/notokr-bold.eot');
+	src: url('../fonts/NotoSansKR2/notokr-bold.ttf');
+	src: url('../fonts/NotoSansKR2/notokr-bold.woff');
+	/*src: url('../fonts/NotoSansKR/notokr-bold.woff2');*/
+	font-weight: 900;
+	font-style: normal
+}
+
+
+
+
+
+@font-face {
+	font-family: Source Sans Pro;
+	src: url('../fonts/SourceSans/Source Sans Pro Regular.eot');
+	src: url('../fonts/SourceSans/Source Sans Pro Regular.ttf');
+	src: url('../fonts/SourceSans/Source Sans Pro Regular.woff');
+	/*src: url('../fonts/SourceSans/Source Sans Pro Regular.woff2');*/
+	font-weight: 400;
+	font-style: normal
+}
+
+@font-face {
+	font-family: Source Sans Pro;
+	src: url('../fonts/SourceSans/Source Sans Pro.semibold.eot');
+	src: url('../fonts/SourceSans/Source Sans Pro.semibold.ttf');
+	src: url('../fonts/SourceSans/Source Sans Pro.semibold.woff');
+	/*src: url('../fonts/SourceSans/Source Sans Pro.semibold.woff2');*/
+	font-weight: 900;
+	font-style: normal
+}
+
+/*한자 본고딕 Exploer에서 느려서 일단 막음*/
+
+@font-face {
+	font-family: notoch;
+	src: url('../fonts/NotoSansCJKsc-hinted/NotoSansCJKsc-Light.otf');
+	font-style: normal
+}
+/*
+@font-face {
+	font-family: notoch;
+	src: url('../fonts/NotoSansCJKsc-hinted/NotoSansCJKsc-Demilight.otf');
+	
+	font-weight: 300;
+	font-style: normal
+}
+@font-face {
+	font-family: notoch;
+	src: url('../fonts/NotoSansCJKsc-hinted/NotoSansCJKsc-Regular.otf');
+	
+	font-weight: 400;
+	font-style: normal
+}
+@font-face {
+	font-family: notoch;
+	src: url('../fonts/NotoSansCJKsc-hinted/NotoSansCJKsc-Medium.otf');
+	
+	font-weight: 500;
+	font-style: normal
+}
+@font-face {
+	font-family: notoch;
+	src: url('../fonts/NotoSansCJKsc-hinted/NotoSansCJKsc-Bold.otf');
+	
+	font-weight: 900;
+	font-style: normal
+}
+
+*/
+
+

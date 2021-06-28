@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.smtown.smhds.account.AccountMapper">
+
+	<!--
+ *   프로그램명 : 요청사항 게시판
+ *   작 성 일 : 2019.05.21
+ *   작 성 자 : 최해림
+ *   비   고 :
+ *   Copyright (c) 2019 SM Entertainment Co.,Ltd All Rights reserved.
+ -->
+
+	<!--
+	/***********************************************************************************
+        작  성  자 : 최해림
+        작  성  일 : 2019.05.21
+        내      용 : 사용자 정보
+        파라미터   : user_name
+    /***********************************************************************************
+    -->
+	<select id="accountDetail" parameterType="String" resultType="com.smtown.smhds.account.Account">
+		SELECT
+			USER_NAME,		/*유저 ID*/
+			PASS_WORD,		/*비밀번호*/
+			ENAB_LEDD, 		/*사용가능*/
+			USER_MAIL, 		/*이메일주소*/
+			REAL_NAME,		/*실명*/
+			DEPT_MENT,		/*부서*/
+			COMM_PANY,		/*회사명*/
+			POSI_TION 		/*직책*/
+		FROM HD_User WHERE USER_NAME = #{user_name}
+	</select>
+
+	<!--
+	/***********************************************************************************
+        작  성  자 : 최해림
+        작  성  일 : 2019.05.21
+        내      용 : 사용자 권한
+        파라미터   : user_name
+    /***********************************************************************************
+    -->
+	<select id="accountAuthority" parameterType="String" resultType="String">
+		SELECT
+			USER_AUTH 		/*유저 권한*/
+		FROM HD_Auth WHERE USER_NAME = #{user_name}
+	</select>
+	
+	<!--
+	/***********************************************************************************
+	작  성  자 : 방재훈
+	작  성  일 : 2019.09.09
+	내      용 : ADUSER TABLE data 유무 확인
+	파라미터   : user_name
+	/***********************************************************************************
+    -->
+	<select id="selADUserCnt" resultType="Integer">
+		<![CDATA[
+		SELECT /* com.smtown.smhds.account.AccountMapper.selADUserCnt ADUSER TABLE data 유무 확인 */
+			COUNT(*)
+		FROM HD_ADUser
+		]]>
+	</select>
+
+	<!--
+	/***********************************************************************************
+        작  성  자 : 방재훈
+        작  성  일 : 2019.09.05
+        내      용 : Active Directory 유저 정보 insert
+        파라미터   : ADAdmin VO
+    /***********************************************************************************
+    -->
+	<insert id="insAdUser" parameterType="com.smtown.smhds.account.ADUserVO">
+		<![CDATA[
+		INSERT INTO HD_ADUser /* com.smtown.smhds.account.AccountMapper.insertAdAdmin Active Directory 유저 정보 insert */ 
+		( 
+			 USER_NAME				/* 사용자계정 */
+		]]>
+		<if test="pass_word != '' and pass_word != null">
+			,PASS_WORD				/* 비밀번호 */
+		</if>
+		<if test="phon_enum != '' and phon_enum != null">
+			,PHON_ENUM				/* 휴대번호 */
+		</if>
+		<if test="user_mail != '' and user_mail != null">
+			,USER_MAIL				/* 사용자메일 */
+		</if>
+		<if test="real_name != '' and real_name != null">
+			,REAL_NAME				/* 사용자이름 */		
+		</if>
+		<if test="dept_ment != '' and dept_ment != null">
+			,DEPT_MENT				/* 부서 */
+		</if>
+		<if test="comm_pany != '' and comm_pany != null">
+			,COMM_PANY				/* 사용자이름 */
+		</if>
+		<if test="posi_tion != '' and posi_tion != null">
+			,POSI_TION				/* 사용자이름 */
+		</if>
+		) VALUES (
+			 #{user_name}
+		<if test="pass_word != '' and pass_word != null">			
+			,#{pass_word}
+		</if>
+		<if test="phon_enum != '' and phon_enum != null">
+			,#{phon_enum}
+		</if>
+		<if test="user_mail != '' and user_mail != null">
+			,#{user_mail}
+		</if>
+		<if test="real_name != '' and real_name != null">
+			,#{real_name}
+		</if>
+		<if test="dept_ment != '' and dept_ment != null">
+			,#{dept_ment}
+		</if>
+		<if test="comm_pany != '' and comm_pany != null">
+			,#{comm_pany}
+		</if>
+		<if test="posi_tion != '' and posi_tion != null">
+			,#{posi_tion}
+		</if>
+		<![CDATA[
+		)
+		]]>	
+	</insert>
+	
+	<!--
+	/***********************************************************************************
+        작  성  자 : 방재훈
+        작  성  일 : 2019.09.10
+        내      용 : ADUser -> User 테이블로 merge
+        파라미터   : ADAdmin VO
+    /***********************************************************************************
+    -->
+    <update id="mergADUserToUser">
+    	<![CDATA[
+		INSERT INTO HD_User /* com.smtown.smhds.account.AccountMapper.mergADUserToUser ADUser -> User 테이블로 merge */
+		(
+			 USER_NAME					/* 사용자계정 */
+			,PASS_WORD
+			,REAL_NAME					/* 사용자이름 */
+			,PHON_ENUM					/* 사용자번호 */
+			,USER_MAIL					/* 사용자메일 */
+			,COMM_PANY					/* 사용자회사 */
+			,DEPT_MENT					/* 사용자부서 */
+		)
+		SELECT 
+			 USER_NAME
+			,PASS_WORD
+			,REAL_NAME
+			,PHON_ENUM
+			,USER_MAIL
+			,COMM_PANY
+			,DEPT_MENT 
+		FROM HD_ADUser AS A
+		ON DUPLICATE KEY 
+		UPDATE
+			 PHON_ENUM = A.PHON_ENUM
+			,USER_MAIL = A.USER_MAIL
+			,DEPT_MENT = A.DEPT_MENT
+			,COMM_PANY = A.COMM_PANY
+    	]]>
+    </update>
+	
+	<!--
+	/***********************************************************************************
+        작  성  자 : 방재훈
+        작  성  일 : 2019.09.10
+        내      용 : User 권한 부여
+        파라미터   : ADAdmin VO
+    /***********************************************************************************
+    -->
+    <insert id="mergAuth">
+    	<![CDATA[
+    	INSERT INTO HD_Auth /* com.smtown.smhds.account.AccountMapper.mergAuth User 권한부여 */
+    	(
+    		 USER_NAME		/* 사용자계정 */
+    		,USER_AUTH		/* 사용자권한 */
+    	)
+    	SELECT
+			 USER_NAME
+			,'002' AS USER_AUTH
+		FROM HD_User AS A
+    	ON DUPLICATE KEY
+    	UPDATE
+    		USER_NAME = A.USER_NAME
+    	]]>
+    </insert>
+	
+	
+	<!--
+	/***********************************************************************************
+        작  성  자 : 방재훈
+        작  성  일 : 2019.09.09
+        내      용 : ADUser Table Data 전체 삭제
+        파라미터   : ADAdmin VO
+    /***********************************************************************************
+    -->
+    <delete id="delADUser">
+    	<![CDATA[
+    	DELETE
+    	FROM HD_ADUser
+    	]]>
+    </delete>
+</mapper>

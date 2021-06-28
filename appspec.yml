@@ -1,0 +1,20 @@
+version: 0.0
+os: linux
+files:
+  - source: /ROOT.war
+    destination: /home/ec2-user/javaapp
+hooks:
+  AfterInstall:
+    - location: codestar_remote_access
+      timeout: 60
+      runas: root
+  ApplicationStart:
+    - location: deploy.sh
+      timeout: 60
+      runas: root
+  ValidateService:
+    - location: healthCheck.sh
+      timeout: 300
+      runas: root
+
+

@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.smtown.smhds.software.SoftwareMapper">
+
+    <!--
+     *   프로그램명 : 자료실 게시판
+     *   작 성 일 : 2019.07.23
+     *   작 성 자 : 최해림
+     *   비   고 :
+     *   Copyright (c) 2019 SM Entertainment Co.,Ltd All Rights reserved.
+     -->
+
+    <!--
+   /***********************************************************************************
+       작  성  자 : 최해림
+       작  성  일 : 2019.07.23
+       내      용 : 자료실 게시판 게시글 갯수
+       파라미터   :
+   /***********************************************************************************
+    -->
+    <select id="softwareCount" resultType="int">
+        SELECT
+        COUNT(*)	/*게시글 갯수*/
+        FROM HD_Software
+        WHERE 1=1
+        <if test="search != ''">
+            AND TITL_NAME LIKE '%' #{search} '%'
+        </if>
+        <!-- 날짜 검색 값이 있을 때-->
+        <if test="start_day != '' and start_day neq null">
+            AND DATE(CREA_DATE) BETWEEN #{start_day} AND #{end_day}
+        </if>
+    </select>
+
+    <!--
+    /***********************************************************************************
+        작  성  자 : 최해림
+        작  성  일 : 2019.07.23
+        내      용 : 게시물 목록
+        파라미터   : pageStart : 시작 페이지, perPageNum : 한 페이지당 보여줄 게시글의 갯수
+    /***********************************************************************************
+     -->
+    <select id="softwareList" resultType="com.smtown.smhds.software.SoftwareVO">
+        SELECT
+        IDXX_NUMB		/*순번*/
+        , TITL_NAME		/*제목*/
+        , USER_NAME		/*이름*/
+        , CONT_ENTS		/*내용*/
+        , CREA_USER		/*생성자*/
+        , CREA_DATE		/*생성일자*/
+        , ROW_NUMBER() OVER (ORDER BY CREA_DATE) AS NUMB_KEYX	/*순번*/
+
+        FROM HD_Software
+        WHERE 1=1
+        <if test="search != ''">
+            AND TITL_NAME LIKE '%' #{search} '%'
+        </if>
+        <!-- 날짜 검색 값이 있을 때-->
+        <if test="start_day != '' and start_day neq null">
+            AND DATE(CREA_DATE) BETWEEN #{start_day} AND #{end_day}
+        </if>
+        ORDER BY CREA_DATE DESC
+        LIMIT #{pageStart}, #{perPageNum}
+    </select>
+
+    <!--
+    /***********************************************************************************
+        작  성  자 : 최해림
+        작  성  일 : 2019.07.23
+        내      용 : softwareIdxx PRIMARY KEY 생성을 위한 시퀸스 생성
+        파라미터   :
+    /***********************************************************************************
+     -->
+    <select id="softwareSelectIdxx" resultType="String">
+        SELECT
+        CONCAT(replace(substr(CONVERT(now(), char),3,8),'-',''), 'SW','1',LPAD(ifnull(max(cast(substr(IDXX_NUMB, 12,2)as  decimal)),0) + 1,4,'0')) AS IDXX_NUMB
+        FROM HD_Software
+        WHERE 1=1
+        AND SUBSTR(IDXX_NUMB,1,6) = replace(substr(CONVERT(now(), char),3,8),'-','')
+    </select>
+
+    <!--
+    /***********************************************************************************
+        작  성  자 : 최해림
+        작  성  일 : 2019.07.23
+        내      용 : 게시글 저장을 위한 insert Query
+        파라미터   :
+    /***********************************************************************************
+     -->
+    <insert id="softwareInsert" parameterType="com.smtown.smhds.software.SoftwareVO">
+        INSERT INTO HD_Software (
+        IDXX_NUMB					/*순번*/
+        , TITL_NAME					/*이름*/
+        , USER_NAME					/*이름*/
+        , CONT_ENTS					/*내용*/
+        , CREA_USER					/*생성자*/
+        , CREA_DATE					/*생성일자*/
+        )
+        VALUES(
+        #{idxx_numb}				/*순번*/
+        ,#{titl_name}				/*제목*/
+        ,#{user_name}				/*이름*/
+        ,#{cont_ents}				/*내용*/
+        ,#{crea_user}				/*생성자*/
+        ,now()						/*생성일자*/
+        )
+    </insert>
+
+    <!--
+    /***********************************************************************************
+    작  성  자 : 최해림
+    작  성  일 : 2019.07.23
+    내      용 : 게시글 상세
+    파라미터   : idxx_numb : 게시글 상세 번호
+    /***********************************************************************************
+    -->
+    <select id="softwareDetail" parameterType="String" resultType="com.smtown.smhds.software.SoftwareVO">
+        SELECT
+        IDXX_NUMB		/*순번*/
+        , TITL_NAME		/*제목*/
+        , USER_NAME		/*이름*/
+        , CONT_ENTS		/*내용*/
+        , CREA_USER		/*생성자*/
+        , CREA_DATE		/*생성일자*/
+        FROM HD_Software
+        WHERE IDXX_NUMB = #{idxx_numb}
+    </select>
+
+    <!--
+    /***********************************************************************************
+        작  성  자 : 최해림
+        작  성  일 : 2019.07.23
+        내      용 : 게시글 삭제
+        파라미터   :
+    /***********************************************************************************
+     -->
+    <delete id="softwareDelete">
+        DELETE FROM HD_Software WHERE IDXX_NUMB = #{idxx_numb}
+    </delete>
+
+    <!--
+    /***********************************************************************************
+    작  성  자 : 최해림
+    작  성  일 : 2019.07.23
+    내      용 : 게시글 수정
+    파라미터   :
+    /***********************************************************************************
+    -->
+    <update id="softwareUpdate" parameterType="com.smtown.smhds.software.SoftwareVO">
+        UPDATE HD_Software
+        SET
+        <if test="titl_name != null">
+            TITL_NAME = #{titl_name}
+        </if>
+        <if test="titl_name != null and cont_ents != null"> , </if>
+        <if test="cont_ents != null">
+            CONT_ENTS = #{cont_ents}
+        </if>
+        WHERE IDXX_NUMB = #{idxx_numb}
+    </update>
+</mapper>

@@ -1,0 +1,454 @@
+@charset "UTF-8";
+/* 사용자 정의 CSS Document */
+
+/* padding 값 */
+.padding_none {
+	padding: 0 !important;
+}
+.padding_b0 {
+	padding-bottom: 0 !important;
+}
+.padding_b30 {
+	padding-bottom:30px !important;
+}
+.padding_b60 {
+	padding-bottom:60px !important;
+}
+.padding_19 {
+	padding: 19px !important;
+}
+.padding_30 {
+	padding: 30px !important;
+}
+.padding_l15{
+	padding-left: 15px !important;
+}
+.padding_l20{
+	padding-left: 20px !important;
+}
+.padding_l30 {
+	padding-left: 30px !important;
+}
+.padding_l40 {
+	padding-left: 40px !important;
+}
+
+.padding_t24 {
+	padding-top: 24px !important;
+}
+
+.padding_t25 {
+	padding-top: 25px !important;
+}
+
+.padding_t30 {
+	padding-top: 30px !important;
+}
+
+.padding_t60 {
+	padding-top: 60px !important;
+}
+
+.padding_t115 {
+	padding-top: 115px !important;
+}
+
+.padding_t128 {
+	padding-top: 128px !important;
+}
+
+/* text-align 값 */
+.text_r {
+	text-align: right !important;
+}
+
+.text_c {
+	text-align: center !important;
+}
+
+.text_l {
+	text-align: left !important;
+}
+/* margin_ 값 */
+.margin_none {
+	margin: 0px !important;
+}
+
+.margin_auto {
+	margin: auto !important;
+}
+
+.margin_t16 {
+	margin-top: 16px !important;
+}
+
+.margin_t20 {
+	margin-top: 20px !important;
+}
+
+.margin_t30 {
+	margin-top: 30px !important;
+}
+
+.margin_b0 {
+	margin-bottom: 0px !important;
+}
+
+.margin_b10 {
+	margin-bottom: 10px !important;
+}
+
+.margin_b20 {
+	margin-bottom: 20px !important;
+}
+
+.margin_b30 {
+	margin-bottom: 30px !important;
+}
+
+.margin_b50 {
+	margin-bottom: 50px !important;
+}
+
+.margin_b55 {
+	margin-bottom: 55px !important;
+}
+
+.margin_b60 {
+	margin-bottom: 60px !important;
+}
+
+.margin_b65 {
+	margin-bottom: 65px !important;
+}
+
+.margin_b70 {
+	margin-bottom: 70px !important;
+}
+
+.margin_b90 {
+	margin-bottom: 90px !important;
+}
+
+.margin_b100 {
+	margin-bottom: 100px !important;
+}
+
+.margin_b130 {
+	margin-bottom: 130px !important;
+}
+
+.margin_b180 {
+	margin-bottom: 180px !important;
+}
+
+.margin_r8 {
+	margin-right: 8px !important;
+}
+
+.margin_r10 {
+	margin-right: 10px !important;
+}
+
+.margin_r12 {
+	margin-right: 12px !important;
+}
+
+.margin_r13 {
+	margin-right: 13px !important;
+}
+
+.margin_r20 {
+	margin-right: 20px !important;
+}
+
+.margin_r23 {
+	margin-right: 23px !important;
+}
+
+.margin_r30 {
+	margin-right: 30px !important;
+}
+/*display 값*/
+.dis_block {
+	display: block !important;
+}
+
+.dis_inline_block {
+	display: inline-block !important;
+}
+/*float_값*/
+.float_r {
+	float: right !important;
+}
+
+.float_l {
+	float: left !important;
+}
+
+.float_none {
+	float: none !important;
+}
+/*width 값*/
+.width_100per {
+	width: 100% !important;
+}
+
+.width_90per {
+	width: 90% !important;
+}
+
+.width_80per {
+	width: 80% !important;
+}
+
+.width_70per {
+	width: 70% !important;
+}
+
+.width_60per {
+	width: 60% !important;
+}
+
+.width_50per {
+	width: 50% !important;
+}
+
+.width_40per {
+	width: 40% !important;
+}
+
+.width_30per {
+	width: 30% !important;
+}
+
+.width_20per {
+	width: 20% !important;
+}
+
+.width_15per {
+	width: 15% !important;
+}
+
+.width_12per {
+	width: 12% !important;
+}
+
+.width_10per {
+	width: 10% !important;
+}
+
+.width_8per {
+	width: 8% !important;
+}
+
+.width_60px {
+	width: 60px !important;
+}
+
+.width_80px {
+	width: 80px !important;
+}
+
+.width_112px {
+	width: 112px !important;
+}
+
+.width_130px {
+	width: 130px !important;
+}
+
+.width_142px {
+	width: 142px !important;
+}
+
+.width_150px {
+	width: 150px !important;
+}
+
+.width_157px {
+	width: 157px !important;
+}
+
+.width_160px {
+	width: 160px !important;
+}
+
+.width_169px {
+	width: 169px !important;
+}
+
+.width_170px {
+	width: 170px !important;
+}
+.width_200px {
+	width: 200px !important;
+}
+.width_280px {
+	width: 280px !important;
+}
+
+.width_281px {
+	width: 281px !important;
+}
+
+.width_284px {
+	width: 284px !important;
+}
+
+.width_290px {
+	width: 290px !important;
+}
+
+.width_292px {
+	width: 292px !important;
+}
+
+.width_310px {
+	width: 310px !important;
+}
+
+.width_327px {
+	width: 327px !important;
+}
+
+.width_360px {
+	width: 360px !important;
+}
+.width_670px {
+	width: 670px !important;
+}
+.width_auto {
+	width: auto !important;
+}
+/*border*/
+.border_none {
+	border: 0 !important;
+}
+
+.border_l0 {
+	border-left: 0 !important;
+}
+
+.border_r0 {
+	border-right: 0 !important;
+}
+
+table.all_td_border_none td {
+	border: 0 !important;
+}
+/*position*/
+.position_rel {
+	position: relative;
+}
+
+.position_abs {
+	position: absolute;
+}
+
+.position_sta {
+	position: static;
+}
+/*height*/
+.height_auto {
+	height: auto !important;
+}
+/*line-height*/
+.line_h14em {
+	line-height: 1.4em !important;
+}
+
+.line_h26px {
+	line-height: 26px !important;
+}
+
+.line_h30px {
+	line-height: 30px;
+}
+/*vertical-align: 값*/
+.vertical_m {
+	vertical-align: middle;
+}
+/* bottom 값 */
+.bottom_0 {
+	bottom: 0 !important;
+}
+
+.bottom_10 {
+	bottom: 10px !important;
+}
+
+.bottom_30 {
+	bottom: 30px !important;
+}
+/* left 값 */
+.left_0 {
+	left: 0 !important;
+}
+/* top  값 */
+.top_0 {
+	top: 0 !important;
+}
+
+.top_-3 {
+	top: -3px !important;
+}
+/* height 값*/
+.height_100per {
+	height: 100% !important;
+}
+/*background_bg*/
+.bg_f5f7f9 {
+	background: #f5f7f9;
+}
+.bg_f9f9fa{
+	background: #f9f9fa;
+}
+/*min-height 값  min_h76 */
+.min_h35 {
+	min-height: 35px;
+}
+/*font_w css*/
+.font_w300 {
+	font-weight: 300;
+}
+.font_w900 {
+	font-weight: 900 !important;
+}
+/*font_s css*/
+.font_s0 {
+	font-size:0;
+}
+.font_s19{
+	font-size:19px !important;
+}
+.font_s24{
+	font-size:24px !important;
+}
+
+.font_s3vw{
+	font-size:3vw !important;
+}
+/*영문용*/
+.en .en_line_h20px{
+	line-height: 20px !important;
+}
+.en .en_line_h22px{
+	line-height: 22px !important;
+}
+/*fake*/
+.fake_text2 {
+    position: absolute;
+    z-index: -10;
+    color: rgba(255, 255, 255, 0);
+	width: 0;
+    height: 0;
+	display:none;
+}
+.fake_th {
+    position: absolute;
+    z-index: -1;
+}
+.color_FF3278{
+	color:#FF3278;
+}

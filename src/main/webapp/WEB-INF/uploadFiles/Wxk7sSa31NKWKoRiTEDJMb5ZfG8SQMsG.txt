@@ -1,0 +1,36 @@
+/*
+				 * wrapperType : 검색 요청에 의해 반환되는 오브젝트 이름 (track, collection, artist)
+				 * kind : 검색 요청에 의해 반환되는 컨텐츠 종류
+				 * artistId : 아티스트 ID 
+				 * collectionId : 앨범 ID
+				 * trackId : 음악 ID
+				 * artistName : 아티스트 이름
+				 * collectionName : 앨범 이름
+				 * trackName : 음악 이름
+				 * collectionCensoredName : 검열된 앨범 이름 (욕설 등) 
+				 * trackCensoredName : 검열된 음악 이름 (욕설 등)
+				 * artistViewUrl : 아이튠즈 내에 아티스트 소개 URL
+				 * collectionViewUrl : 아이튠즈 내에 앨범 소개 URL
+				 * trackViewUrl : 아이튠즈 내에 음악 소개 URL
+				 * previewUrl : 아이튠즈 해당 음악 미리듣기 URL
+				 * artworkUrl30 : 앨범 사진 30x30
+				 * artworkUrl60 : 앨범 사진 60x60
+				 * artworkUrl100 : 앨범 사진 100x100
+				 * collectionPrice : 앨범 가격
+				 * trackPrice : 음악 가격
+				 * releaseDate : 앨범 출시일
+				 * collectionExplicitness : 앨범이 RIAA(The Recording Industry Association of America)에 의해 자문받았는지 여부
+				 * trackExplicitness : 음악이 RIAA에 의해 자문받았는지 여부
+				 	- explicit : 가사, 앨범 커버 모두 자문 받음
+				 	- cleaned : 가사 자문 받음
+				 	- notExplicit : 해당 사항 없음
+				 * discCount : 
+				 * discNumber : 
+				 * trackCount : 
+				 * trackNumber : 앨범의 트랙 넘버
+				 * tracktimeMillis : 음악 재생 시간
+				 * country : 나라 코드
+				 * currency : 통화
+				 * primaryGenereName : 장르 이름
+				 * isStreamable : 
+				 */

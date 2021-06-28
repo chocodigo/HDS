@@ -1,0 +1,6 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="HDS">
+    <output-path>$PROJECT_DIR$/classes/artifacts/HDS</output-path>
+    <root id="archive" name="HDS.jar" />
+  </artifact>
+</component>

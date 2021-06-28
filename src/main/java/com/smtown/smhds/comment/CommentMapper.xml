@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.smtown.smhds.comment.CommentMapper">
+
+	<!--
+     *   프로그램명 : 요청사항 게시판
+     *   작 성 일 : 2019.06.10
+     *   작 성 자 : 최해림
+     *   비   고 :
+     *   Copyright (c) 2019 SM Entertainment Co.,Ltd All Rights reserved.
+     -->
+
+
+	<!--
+   /***********************************************************************************
+       작  성  자 : 최해림
+       작  성  일 : 2019.06.10
+       내      용 : CommentIdxx PRIMARY KEY 생성을 위한 시퀸스 생성
+       파라미터   :
+   /***********************************************************************************
+   -->
+	<select id="commentSelectIdxx" resultType="String">
+		SELECT
+		CONCAT(replace(substr(CONVERT(now(), char),3,8),'-',''), 'HDCM',LPAD(ifnull(max(cast(substr(COMM_IDXX, 13,2)as  decimal)),0) + 1,4,'0')) AS COMM_IDXX
+		FROM HD_Comment
+		WHERE 1=1
+		AND SUBSTR(COMM_IDXX,1,6) = replace(substr(CONVERT(now(), char),3,8),'-','')
+
+	</select>
+
+	<!-- 
+	/***********************************************************************************
+        작  성  자 : 최해림
+        작  성  일 : 2019.06.10
+        내      용 : 댓글 저장을 위한 insert Query
+        파라미터   : CommentVO
+    /*********************************************************************************** 
+     -->
+	<insert id="commentInsert" parameterType="com.smtown.smhds.comment.CommentVO">
+		INSERT INTO
+		HD_Comment (
+		COMM_IDXX,		/*댓글 ID*/
+		IDXX_NUMB,		/*댓글이 등록되는 게시글 ID*/
+		COMM_TITL,		/*답글 제목*/
+		COMM_CONT,		/*댓글 내용*/
+		USER_NAME,		/*댓글 작성자*/
+		COMM_DATE,		/*댓글이 등록된 날짜*/
+		CREA_USER 		/*댓글 작성한 사용자 이름*/
+
+		)
+		VALUES(
+		#{comm_idxx},	/*댓글 ID*/
+		#{idxx_numb},	/*댓글이 등록되는 게시글 ID*/
+		#{comm_titl},	/*답글제목*/
+		#{comm_cont},	/*댓글 내용*/
+		#{user_name},	/*댓글 작성자*/
+		now(),			/*댓글이 등록된 날짜*/
+		#{crea_user}	/*댓글 작성한 사용자 이름*/
+		)
+	</insert>
+
+	<!--
+    /***********************************************************************************
+        작  성  자 : 최해림
+        작  성  일 : 2019.06.10
+        내      용 : 댓글 수정을 위한 update Query
+        파라미터   : CommentVO
+    /*********************************************************************************** 
+     -->
+	<update id="commentUpdate" parameterType="com.smtown.smhds.comment.CommentVO">
+		UPDATE HD_Comment
+		SET
+		COMM_TITL = #{comm_titl}, 	/*답글 제목*/
+		COMM_CONT = #{comm_cont}	/*댓글 내용*/
+		WHERE IDXX_NUMB = #{idxx_numb}
+	</update>
+
+	<!--
+  /***********************************************************************************
+      작  성  자 : 최해림
+      작  성  일 : 2019.06.10
+      내      용 : 댓글 삭제를 위한 delete Query
+      파라미터   : comm_idxx 댓글 주키
+  /***********************************************************************************
+   -->
+	<delete id="commentDelete" parameterType="String">
+		DELETE
+		FROM HD_Comment
+		WHERE COMM_IDXX = #{comm_idxx}
+	</delete>
+
+	<!--
+	/***********************************************************************************
+        작  성  자 : 최해림
+        작  성  일 : 2019.06.20
+        내      용 : 댓글 조회를 위한 select Query
+        파라미터   : idxx_numb 댓글이 등록된 글의 주키
+    /***********************************************************************************
+     -->
+	<select id="commentDetail" parameterType="String" resultType="com.smtown.smhds.comment.CommentVO">
+		SELECT
+		COMM_IDXX,		/*댓글 ID*/
+		IDXX_NUMB,		/*댓글이 등록되는 게시글 ID*/
+		COMM_TITL,		/*답글 제목*/
+		COMM_CONT,		/*댓글 내용*/
+		USER_NAME,		/*댓글 작성자*/
+		COMM_DATE,		/*댓글이 등록된 날짜*/
+		CREA_USER 		/*댓글 작성한 사용자 이름*/
+		FROM HD_Comment
+		WHERE IDXX_NUMB = #{idxx_numb}
+	</select>
+
+	<!--
+	/***********************************************************************************
+        작  성  자 : 최해림
+        작  성  일 : 2019.06.24
+        내      용 : 답글 comm_idxx를 받아오기 위한 select Query
+        파라미터   : idxx_numb 댓글이 등록된 글의 주키
+    /***********************************************************************************
+     -->
+	<select id="commentSelectCommIdxx" parameterType="String" resultType="String">
+		SELECT
+		COMM_IDXX		/*댓글 ID*/
+		FROM HD_Comment
+		WHERE IDXX_NUMB = #{idxx_numb}
+	</select>
+</mapper>
